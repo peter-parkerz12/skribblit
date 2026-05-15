@@ -76,26 +76,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover",
       },
-      { title: "Skribble" },
+      { title: "Skribble — Real-time drawing & guessing" },
       {
         name: "description",
         content:
           "A premium real-time multiplayer drawing & guessing game. Create a room, invite friends, play instantly.",
       },
       { name: "theme-color", content: "#FFE34D" },
-      { property: "og:title", content: "Skribble" },
+      { property: "og:title", content: "Skribble — Real-time drawing & guessing" },
       {
         property: "og:description",
         content: "Real-time multiplayer drawing & guessing.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Skribble" },
+      { name: "twitter:title", content: "Skribble — Real-time drawing & guessing" },
       { name: "description", content: "A real-time multiplayer drawing and guessing game with a premium UI and PWA capabilities." },
       { property: "og:description", content: "A real-time multiplayer drawing and guessing game with a premium UI and PWA capabilities." },
       { name: "twitter:description", content: "A real-time multiplayer drawing and guessing game with a premium UI and PWA capabilities." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/936c4f5a-17fc-4f90-99d5-ac0c37de3581/id-preview-63ebbd63--214d44d0-3a19-4fe1-9475-80a98609a5b6.lovable.app-1778863268975.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/936c4f5a-17fc-4f90-99d5-ac0c37de3581/id-preview-63ebbd63--214d44d0-3a19-4fe1-9475-80a98609a5b6.lovable.app-1778863268975.png" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a7b7790e-f7b2-43dc-b9d0-78c12b3a2984/id-preview-93f25806--214d44d0-3a19-4fe1-9475-80a98609a5b6.lovable.app-1778864331131.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a7b7790e-f7b2-43dc-b9d0-78c12b3a2984/id-preview-93f25806--214d44d0-3a19-4fe1-9475-80a98609a5b6.lovable.app-1778864331131.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
