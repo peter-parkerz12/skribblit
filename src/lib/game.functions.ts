@@ -235,15 +235,15 @@ export const updateSettings = createServerFn({ method: "POST" })
     if (room.host_id !== data.playerId) throw new Error("Not host");
     if (room.phase !== "lobby") throw new Error("Settings locked after start");
 
-    const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
-    if (data.total_rounds !== undefined) patch.total_rounds = data.total_rounds;
-    if (data.round_seconds !== undefined) patch.round_seconds = data.round_seconds;
-    if (data.max_players !== undefined) patch.max_players = data.max_players;
-    if (data.difficulty !== undefined) patch.difficulty = data.difficulty;
-
     const { error } = await supabaseAdmin
       .from("rooms")
-      .update(patch)
+      .update({
+        updated_at: new Date().toISOString(),
+        ...(data.total_rounds !== undefined ? { total_rounds: data.total_rounds } : {}),
+        ...(data.round_seconds !== undefined ? { round_seconds: data.round_seconds } : {}),
+        ...(data.max_players !== undefined ? { max_players: data.max_players } : {}),
+        ...(data.difficulty !== undefined ? { difficulty: data.difficulty } : {}),
+      })
       .eq("code", code);
     if (error) throw new Error(error.message);
     return { ok: true };
