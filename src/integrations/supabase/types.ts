@@ -14,7 +14,154 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          kind: string
+          player_color: string
+          player_id: string
+          player_name: string
+          room_code: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          kind?: string
+          player_color: string
+          player_id: string
+          player_name: string
+          room_code: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          player_color?: string
+          player_id?: string
+          player_name?: string
+          room_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_room_code_fkey"
+            columns: ["room_code"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      players: {
+        Row: {
+          color: string
+          guess_order: number | null
+          guessed_correctly: boolean
+          id: string
+          is_host: boolean
+          joined_at: string
+          last_seen: string
+          name: string
+          room_code: string
+          round_score: number
+          score: number
+        }
+        Insert: {
+          color: string
+          guess_order?: number | null
+          guessed_correctly?: boolean
+          id: string
+          is_host?: boolean
+          joined_at?: string
+          last_seen?: string
+          name: string
+          room_code: string
+          round_score?: number
+          score?: number
+        }
+        Update: {
+          color?: string
+          guess_order?: number | null
+          guessed_correctly?: boolean
+          id?: string
+          is_host?: boolean
+          joined_at?: string
+          last_seen?: string
+          name?: string
+          room_code?: string
+          round_score?: number
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "players_room_code_fkey"
+            columns: ["room_code"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      rooms: {
+        Row: {
+          code: string
+          created_at: string
+          current_drawer_id: string | null
+          current_round: number
+          difficulty: string
+          drawer_queue: string[]
+          host_id: string
+          max_players: number
+          phase: string
+          round_ends_at: string | null
+          round_seconds: number
+          secret_word: string | null
+          total_rounds: number
+          updated_at: string
+          used_words: string[]
+          word_choices: string[]
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          current_drawer_id?: string | null
+          current_round?: number
+          difficulty?: string
+          drawer_queue?: string[]
+          host_id: string
+          max_players?: number
+          phase?: string
+          round_ends_at?: string | null
+          round_seconds?: number
+          secret_word?: string | null
+          total_rounds?: number
+          updated_at?: string
+          used_words?: string[]
+          word_choices?: string[]
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          current_drawer_id?: string | null
+          current_round?: number
+          difficulty?: string
+          drawer_queue?: string[]
+          host_id?: string
+          max_players?: number
+          phase?: string
+          round_ends_at?: string | null
+          round_seconds?: number
+          secret_word?: string | null
+          total_rounds?: number
+          updated_at?: string
+          used_words?: string[]
+          word_choices?: string[]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
