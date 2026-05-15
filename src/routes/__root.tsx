@@ -76,7 +76,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover",
       },
-      { title: "Skribble — Real-time drawing & guessing" },
+      { title: "Skribble" },
       {
         name: "description",
         content:
@@ -90,6 +90,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Skribble" },
+      { name: "description", content: "A real-time multiplayer drawing and guessing game with a premium UI and PWA capabilities." },
+      { property: "og:description", content: "A real-time multiplayer drawing and guessing game with a premium UI and PWA capabilities." },
+      { name: "twitter:description", content: "A real-time multiplayer drawing and guessing game with a premium UI and PWA capabilities." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/936c4f5a-17fc-4f90-99d5-ac0c37de3581/id-preview-63ebbd63--214d44d0-3a19-4fe1-9475-80a98609a5b6.lovable.app-1778863268975.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/936c4f5a-17fc-4f90-99d5-ac0c37de3581/id-preview-63ebbd63--214d44d0-3a19-4fe1-9475-80a98609a5b6.lovable.app-1778863268975.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
