@@ -18,7 +18,12 @@ export function Lobby({ room, players, playerId }: Props) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  async function setSetting(patch: Parameters<typeof update>[0]["data"]) {
+  async function setSetting(patch: {
+    total_rounds?: number;
+    round_seconds?: number;
+    max_players?: number;
+    difficulty?: "easy" | "medium" | "hard" | "mixed";
+  }) {
     setErr(null);
     try {
       await update({ data: { ...patch, code: room.code, playerId } });
