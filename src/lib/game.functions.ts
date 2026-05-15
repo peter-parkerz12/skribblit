@@ -568,7 +568,11 @@ async function beginNextDrawerInternal(code: string) {
     .update({ guessed_correctly: false, guess_order: null, round_score: 0 })
     .eq("room_code", code);
 
-  const choices = pickWordChoices(room.difficulty, room.used_words, 3);
+  const choices = pickWordChoices(
+    room.difficulty as "easy" | "medium" | "hard" | "mixed",
+    room.used_words,
+    3,
+  );
   await supabaseAdmin
     .from("rooms")
     .update({
