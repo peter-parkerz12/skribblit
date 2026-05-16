@@ -8,9 +8,11 @@ interface Props {
   isDrawer: boolean;
   drawerName: string | undefined;
   playerId: string;
+  /** Word choices fetched via the drawer-only server function. */
+  choices: string[];
 }
 
-export function WordChooser({ room, isDrawer, drawerName, playerId }: Props) {
+export function WordChooser({ room, isDrawer, drawerName, playerId, choices }: Props) {
   const choose = useServerFn(chooseWord);
   const [busy, setBusy] = useState<string | null>(null);
 
@@ -32,7 +34,7 @@ export function WordChooser({ room, isDrawer, drawerName, playerId }: Props) {
           </p>
           <h2 className="text-2xl font-black sm:text-3xl">Pick what to draw</h2>
           <div className="mt-2 grid w-full max-w-2xl gap-3 sm:grid-cols-3">
-            {room.word_choices.map((w) => (
+            {choices.map((w) => (
               <button
                 key={w}
                 type="button"

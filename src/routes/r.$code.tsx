@@ -6,6 +6,7 @@ import {
   joinRoom,
   leaveRoom,
   tickRoom,
+  getDrawerSecret,
 } from "@/lib/game.functions";
 import {
   getOrCreatePlayerId,
@@ -23,7 +24,7 @@ import { WordChooser } from "@/components/game/WordChooser";
 import { RoundSummary } from "@/components/game/RoundSummary";
 import { GameEnd } from "@/components/game/GameEnd";
 import { RoomCodeChip } from "@/components/game/RoomCodeChip";
-import { maskWord } from "@/lib/words";
+
 
 export const Route = createFileRoute("/r/$code")({
   head: () => ({
@@ -46,11 +47,16 @@ function RoomPage() {
   const join = useServerFn(joinRoom);
   const leave = useServerFn(leaveRoom);
   const tick = useServerFn(tickRoom);
+  const fetchSecret = useServerFn(getDrawerSecret);
+  const [drawerSecret, setDrawerSecret] = useState<{
+    secret_word: string | null;
+    word_choices: string[];
+  }>({ secret_word: null, word_choices: [] });
 
   const { room, players, messages, loading, notFound } = useRoom(
     playerId ? code : undefined,
   );
-  const me = players.find((p) => p.id === playerId);
+  
 
   // Bootstrap player + try to join
   useEffect(() => {
@@ -85,6 +91,27 @@ function RoomPage() {
     }, remaining);
     return () => clearTimeout(id);
   }, [room, tick, code]);
+
+  // Drawer-only: fetch the actual secret word + choices via server fn.
+  // (Column-level revoked from anon so the public room row never carries them.)
+  const isDrawerHere = room?.current_drawer_id === playerId;
+  const phase = room?.phase;
+  useEffect(() => {
+    if (!playerId || !room) return;
+    if (!isDrawerHere || (phase !== "choosing" && phase !== "drawing")) {
+      setDrawerSecret({ secret_word: null, word_choices: [] });
+      return;
+    }
+    let cancelled = false;
+    fetchSecret({ data: { code, playerId } })
+      .then((res) => {
+        if (!cancelled) setDrawerSecret(res);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [code, playerId, isDrawerHere, phase, room?.current_drawer_id, fetchSecret, room]);
 
   // Leave on unload
   const playerIdRef = useRef(playerId);
@@ -205,12 +232,14 @@ function RoomPage() {
   // Active gameplay (choosing / drawing / round_end)
   const isDrawer = room.current_drawer_id === playerId;
   const drawer = players.find((p) => p.id === room.current_drawer_id);
+  // Drawer sees the real word (via the drawer-only server fn). Everyone else
+  // sees the public mask; correct guessers see the word in chat once revealed.
+  const knownWord = isDrawer ? drawerSecret.secret_word : null;
   const wordDisplay =
-    room.phase === "drawing" && room.secret_word
-      ? isDrawer || me?.guessed_correctly
-        ? room.secret_word
-        : maskWord(room.secret_word)
+    room.phase === "drawing"
+      ? knownWord ?? (room.word_mask || "—")
       : "—";
+  const letterCount = (room.word_mask || "").replace(/[^a-zA-Z_]/g, "").length;
 
   return (
     <main className="min-h-screen">
@@ -250,9 +279,9 @@ function RoomPage() {
               {wordDisplay}
             </p>
           </div>
-          {room.phase === "drawing" && room.secret_word && (
+          {room.phase === "drawing" && letterCount > 0 && (
             <span className="text-xs font-bold text-muted-foreground">
-              {room.secret_word.replace(/[^a-zA-Z]/g, "").length} letters
+              {letterCount} letters
             </span>
           )}
         </div>
@@ -267,6 +296,7 @@ function RoomPage() {
                   isDrawer={isDrawer}
                   drawerName={drawer?.name}
                   playerId={playerId}
+                  choices={drawerSecret.word_choices}
                 />
               </div>
             )}

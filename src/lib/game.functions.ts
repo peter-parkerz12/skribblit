@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { generateRoomCode, pickPlayerColor, isCloseGuess } from "./game-utils";
-import { pickWordChoices } from "./words";
+import { pickWordChoices, maskWord } from "./words";
 
 // ---------- helpers ----------
 
@@ -305,6 +305,7 @@ export const chooseWord = createServerFn({ method: "POST" })
         phase: "drawing",
         secret_word: data.word,
         word_choices: [],
+        word_mask: maskWord(data.word, 0),
         round_ends_at: endsAt,
         used_words: [...room.used_words, data.word],
         updated_at: new Date().toISOString(),
@@ -470,6 +471,7 @@ export const advanceFromRoundEnd = createServerFn({ method: "POST" })
             current_drawer_id: null,
             secret_word: null,
             word_choices: [],
+            word_mask: "",
             round_ends_at: null,
             updated_at: new Date().toISOString(),
           })
@@ -511,6 +513,7 @@ export const playAgain = createServerFn({ method: "POST" })
         current_drawer_id: null,
         secret_word: null,
         word_choices: [],
+        word_mask: "",
         round_ends_at: null,
         used_words: [],
         drawer_queue: [],
@@ -580,6 +583,7 @@ async function beginNextDrawerInternal(code: string) {
       current_drawer_id: drawerId,
       secret_word: null,
       word_choices: choices,
+      word_mask: "",
       round_ends_at: null,
       drawer_queue: queue,
       updated_at: new Date().toISOString(),
@@ -607,7 +611,42 @@ async function endRoundInternal(code: string, reason: string | null) {
     .update({
       phase: "round_end",
       round_ends_at: null,
+      // Reveal the word publicly now that the round is over.
+      word_mask: room.secret_word ?? "",
       updated_at: new Date().toISOString(),
     })
     .eq("code", code);
 }
+
+// ---------- drawer-only secret retrieval ----------
+// secret_word and word_choices are revoked from anon/authenticated at the
+// column level so guessers can't read them via the API or realtime.
+// The drawer fetches them via this server function, which checks the player
+// is actually the current drawer for that room.
+
+export const getDrawerSecret = createServerFn({ method: "POST" })
+  .inputValidator((input: { playerId: string; code: string }) => {
+    const schema = z.object({
+      playerId: z.string().regex(PID_RE),
+      code: z.string().regex(CODE_RE),
+    });
+    return schema.parse(input);
+  })
+  .handler(async ({ data }) => {
+    const code = data.code.toUpperCase();
+    const { data: row, error } = await supabaseAdmin
+      .from("rooms")
+      .select("current_drawer_id, phase, secret_word, word_choices")
+      .eq("code", code)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!row) throw new Error("Room not found");
+    if (row.current_drawer_id !== data.playerId) {
+      // Don't leak whether choosing/drawing — just return empty.
+      return { secret_word: null as string | null, word_choices: [] as string[] };
+    }
+    return {
+      secret_word: (row.secret_word ?? null) as string | null,
+      word_choices: (row.word_choices ?? []) as string[],
+    };
+  });

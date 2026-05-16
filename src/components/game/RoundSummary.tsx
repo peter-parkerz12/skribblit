@@ -31,7 +31,7 @@ export function RoundSummary({ room, players, playerId }: Props) {
       <h2 className="text-3xl font-black sm:text-4xl">
         Word was{" "}
         <span className="rounded-md border-2 border-foreground bg-primary px-3 py-1 capitalize">
-          {room.secret_word ?? "—"}
+          {room.word_mask || "—"}
         </span>
       </h2>
       <ul className="w-full max-w-md space-y-2">
