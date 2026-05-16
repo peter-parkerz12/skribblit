@@ -232,12 +232,15 @@ function RoomPage() {
   // Active gameplay (choosing / drawing / round_end)
   const isDrawer = room.current_drawer_id === playerId;
   const drawer = players.find((p) => p.id === room.current_drawer_id);
+  // Drawer / correct guessers see the real word (drawer via server fn, others
+  // via system message after they guess). Everyone else sees the public mask.
+  const knownWord =
+    isDrawer ? drawerSecret.secret_word : me?.guessed_correctly ? null : null;
   const wordDisplay =
-    room.phase === "drawing" && room.secret_word
-      ? isDrawer || me?.guessed_correctly
-        ? room.secret_word
-        : maskWord(room.secret_word)
+    room.phase === "drawing"
+      ? knownWord ?? room.word_mask || "—"
       : "—";
+  const letterCount = (room.word_mask || "").replace(/[^a-zA-Z_]/g, "").length;
 
   return (
     <main className="min-h-screen">
@@ -277,9 +280,9 @@ function RoomPage() {
               {wordDisplay}
             </p>
           </div>
-          {room.phase === "drawing" && room.secret_word && (
+          {room.phase === "drawing" && letterCount > 0 && (
             <span className="text-xs font-bold text-muted-foreground">
-              {room.secret_word.replace(/[^a-zA-Z]/g, "").length} letters
+              {letterCount} letters
             </span>
           )}
         </div>
