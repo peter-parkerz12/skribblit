@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { generateRoomCode, pickPlayerColor, isCloseGuess } from "./game-utils";
-import { pickWordChoices } from "./words";
+import { pickWordChoices, maskWord } from "./words";
 
 // ---------- helpers ----------
 
@@ -305,6 +305,7 @@ export const chooseWord = createServerFn({ method: "POST" })
         phase: "drawing",
         secret_word: data.word,
         word_choices: [],
+        word_mask: maskWord(data.word, 0),
         round_ends_at: endsAt,
         used_words: [...room.used_words, data.word],
         updated_at: new Date().toISOString(),
