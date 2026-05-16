@@ -123,6 +123,7 @@ export type Database = {
           updated_at: string
           used_words: string[]
           word_choices: string[]
+          word_mask: string
         }
         Insert: {
           code: string
@@ -141,6 +142,7 @@ export type Database = {
           updated_at?: string
           used_words?: string[]
           word_choices?: string[]
+          word_mask?: string
         }
         Update: {
           code?: string
@@ -159,6 +161,7 @@ export type Database = {
           updated_at?: string
           used_words?: string[]
           word_choices?: string[]
+          word_mask?: string
         }
         Relationships: []
       }

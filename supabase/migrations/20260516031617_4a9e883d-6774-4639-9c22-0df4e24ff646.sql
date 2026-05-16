@@ -1,0 +1,2 @@
+ALTER TABLE public.rooms
+  ADD COLUMN IF NOT EXISTS word_mask text NOT NULL DEFAULT '';
