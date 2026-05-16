@@ -6,6 +6,7 @@ import {
   joinRoom,
   leaveRoom,
   tickRoom,
+  getDrawerSecret,
 } from "@/lib/game.functions";
 import {
   getOrCreatePlayerId,
@@ -46,6 +47,11 @@ function RoomPage() {
   const join = useServerFn(joinRoom);
   const leave = useServerFn(leaveRoom);
   const tick = useServerFn(tickRoom);
+  const fetchSecret = useServerFn(getDrawerSecret);
+  const [drawerSecret, setDrawerSecret] = useState<{
+    secret_word: string | null;
+    word_choices: string[];
+  }>({ secret_word: null, word_choices: [] });
 
   const { room, players, messages, loading, notFound } = useRoom(
     playerId ? code : undefined,
