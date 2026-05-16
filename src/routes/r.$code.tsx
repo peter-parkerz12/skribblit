@@ -297,6 +297,7 @@ function RoomPage() {
                   isDrawer={isDrawer}
                   drawerName={drawer?.name}
                   playerId={playerId}
+                  choices={drawerSecret.word_choices}
                 />
               </div>
             )}
