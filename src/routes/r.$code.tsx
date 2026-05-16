@@ -238,7 +238,7 @@ function RoomPage() {
     isDrawer ? drawerSecret.secret_word : me?.guessed_correctly ? null : null;
   const wordDisplay =
     room.phase === "drawing"
-      ? knownWord ?? room.word_mask || "—"
+      ? knownWord ?? (room.word_mask || "—")
       : "—";
   const letterCount = (room.word_mask || "").replace(/[^a-zA-Z_]/g, "").length;
 
