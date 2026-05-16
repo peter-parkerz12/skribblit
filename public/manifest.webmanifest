@@ -1,6 +1,6 @@
 {
-  "name": "Skribble — Drawing & Guessing",
-  "short_name": "Skribble",
+  "name": "Skribblit — Drawing & Guessing",
+  "short_name": "Skribblit",
   "description": "Real-time multiplayer drawing & guessing game.",
   "start_url": "/",
   "display": "standalone",

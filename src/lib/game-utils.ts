@@ -74,7 +74,7 @@ export function isCloseGuess(guess: string, word: string): boolean {
 
 export function getOrCreatePlayerId(): string {
   if (typeof window === "undefined") return "";
-  const KEY = "skribble.playerId";
+  const KEY = "skribblit.playerId";
   let id = localStorage.getItem(KEY);
   if (!id) {
     id =
@@ -88,10 +88,10 @@ export function getOrCreatePlayerId(): string {
 
 export function getStoredName(): string {
   if (typeof window === "undefined") return "";
-  return localStorage.getItem("skribble.name") ?? "";
+  return localStorage.getItem("skribblit.name") ?? "";
 }
 
 export function setStoredName(name: string): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem("skribble.name", name);
+  localStorage.setItem("skribblit.name", name);
 }

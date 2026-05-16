@@ -28,7 +28,7 @@ import { RoomCodeChip } from "@/components/game/RoomCodeChip";
 
 export const Route = createFileRoute("/r/$code")({
   head: () => ({
-    meta: [{ title: "Skribble — Game Room" }],
+    meta: [{ title: "Skribblit — Game Room" }],
   }),
   component: RoomPage,
 });

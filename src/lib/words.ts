@@ -1,4 +1,4 @@
-// Curated word bank for Skribble. Balanced, drawable, family-friendly.
+// Curated word bank for Skribblit. Balanced, drawable, family-friendly.
 export type Difficulty = "easy" | "medium" | "hard";
 
 const EASY = [
