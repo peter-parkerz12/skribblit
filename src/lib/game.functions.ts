@@ -82,19 +82,25 @@ export const createRoom = createServerFn({ method: "POST" })
     });
     if (roomErr) throw new Error(roomErr.message);
 
+    // Purge any stale row for this player from a previous room.
+    await supabaseAdmin.from("players").delete().eq("id", data.playerId);
+
     const color = pickPlayerColor([]);
-    const { error: pErr } = await supabaseAdmin.from("players").upsert({
-      id: data.playerId,
-      room_code: code,
-      name,
-      color,
-      is_host: true,
-      score: 0,
-      round_score: 0,
-      guessed_correctly: false,
-      guess_order: null,
-      last_seen: new Date().toISOString(),
-    });
+    const { error: pErr } = await supabaseAdmin.from("players").upsert(
+      {
+        id: data.playerId,
+        room_code: code,
+        name,
+        color,
+        is_host: true,
+        score: 0,
+        round_score: 0,
+        guessed_correctly: false,
+        guess_order: null,
+        last_seen: new Date().toISOString(),
+      },
+      { onConflict: "id" },
+    );
     if (pErr) throw new Error(pErr.message);
 
     return { code };
