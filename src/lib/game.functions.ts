@@ -471,6 +471,7 @@ export const advanceFromRoundEnd = createServerFn({ method: "POST" })
             current_drawer_id: null,
             secret_word: null,
             word_choices: [],
+            word_mask: "",
             round_ends_at: null,
             updated_at: new Date().toISOString(),
           })
@@ -512,6 +513,7 @@ export const playAgain = createServerFn({ method: "POST" })
         current_drawer_id: null,
         secret_word: null,
         word_choices: [],
+        word_mask: "",
         round_ends_at: null,
         used_words: [],
         drawer_queue: [],
@@ -581,6 +583,7 @@ async function beginNextDrawerInternal(code: string) {
       current_drawer_id: drawerId,
       secret_word: null,
       word_choices: choices,
+      word_mask: "",
       round_ends_at: null,
       drawer_queue: queue,
       updated_at: new Date().toISOString(),
@@ -608,6 +611,8 @@ async function endRoundInternal(code: string, reason: string | null) {
     .update({
       phase: "round_end",
       round_ends_at: null,
+      // Reveal the word publicly now that the round is over.
+      word_mask: room.secret_word ?? "",
       updated_at: new Date().toISOString(),
     })
     .eq("code", code);
