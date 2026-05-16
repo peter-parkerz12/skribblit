@@ -138,15 +138,30 @@ export const joinRoom = createServerFn({ method: "POST" })
       throw new Error("That name is already taken in this room");
     }
 
+    // Player IDs are primary keys — purge any stale row in another room
+    // (e.g. the user previously played in a different room and never cleaned up).
+    await supabaseAdmin
+      .from("players")
+      .delete()
+      .eq("id", data.playerId)
+      .neq("room_code", code);
+
     const color = pickPlayerColor(players.map((p) => p.color));
-    const { error } = await supabaseAdmin.from("players").insert({
-      id: data.playerId,
-      room_code: code,
-      name,
-      color,
-      is_host: false,
-      last_seen: new Date().toISOString(),
-    });
+    const { error } = await supabaseAdmin.from("players").upsert(
+      {
+        id: data.playerId,
+        room_code: code,
+        name,
+        color,
+        is_host: false,
+        score: 0,
+        round_score: 0,
+        guessed_correctly: false,
+        guess_order: null,
+        last_seen: new Date().toISOString(),
+      },
+      { onConflict: "id" },
+    );
     if (error) throw new Error(error.message);
 
     await postSystemMessage(code, `${name} joined`);
