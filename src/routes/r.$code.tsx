@@ -24,7 +24,7 @@ import { WordChooser } from "@/components/game/WordChooser";
 import { RoundSummary } from "@/components/game/RoundSummary";
 import { GameEnd } from "@/components/game/GameEnd";
 import { RoomCodeChip } from "@/components/game/RoomCodeChip";
-import { maskWord } from "@/lib/words";
+
 
 export const Route = createFileRoute("/r/$code")({
   head: () => ({
