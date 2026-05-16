@@ -14,13 +14,13 @@ import { Palette, Users, Sparkles, Zap } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Skribble — Real-time multiplayer drawing & guessing" },
+      { title: "Skribblit — Real-time multiplayer drawing & guessing" },
       {
         name: "description",
         content:
           "A premium, fast, mobile-friendly multiplayer drawing & guessing game. Create a room, share a code, draw and guess in real time.",
       },
-      { property: "og:title", content: "Skribble" },
+      { property: "og:title", content: "Skribblit" },
       {
         property: "og:description",
         content: "Multiplayer drawing & guessing — done right.",
@@ -94,7 +94,7 @@ function LandingPage() {
             <span className="flex h-10 w-10 items-center justify-center rounded-md border-2 border-foreground bg-primary shadow-brutal-sm">
               <Palette className="h-5 w-5" />
             </span>
-            <span className="text-xl font-black tracking-tight">Skribble</span>
+            <span className="text-xl font-black tracking-tight">Skribblit</span>
           </div>
           <span className="hidden rounded-md border-2 border-foreground bg-card px-2 py-1 text-[10px] font-extrabold uppercase tracking-widest sm:inline-block">
             v1 · realtime

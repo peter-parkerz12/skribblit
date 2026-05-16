@@ -77,21 +77,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover",
       },
-      { title: "Skribble — Real-time drawing & guessing" },
+      { title: "Skribblit — Real-time drawing & guessing" },
       {
         name: "description",
         content:
           "A premium real-time multiplayer drawing & guessing game. Create a room, invite friends, play instantly.",
       },
       { name: "theme-color", content: "#FFE34D" },
-      { property: "og:title", content: "Skribble — Real-time drawing & guessing" },
+      { property: "og:title", content: "Skribblit — Real-time drawing & guessing" },
       {
         property: "og:description",
         content: "Real-time multiplayer drawing & guessing.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Skribble — Real-time drawing & guessing" },
+      { name: "twitter:title", content: "Skribblit — Real-time drawing & guessing" },
       { name: "twitter:description", content: "Real-time multiplayer drawing & guessing." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a7b7790e-f7b2-43dc-b9d0-78c12b3a2984/id-preview-93f25806--214d44d0-3a19-4fe1-9475-80a98609a5b6.lovable.app-1778864331131.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a7b7790e-f7b2-43dc-b9d0-78c12b3a2984/id-preview-93f25806--214d44d0-3a19-4fe1-9475-80a98609a5b6.lovable.app-1778864331131.png" },
