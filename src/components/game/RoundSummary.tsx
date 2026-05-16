@@ -14,10 +14,13 @@ export function RoundSummary({ room, players, playerId }: Props) {
   const advance = useServerFn(advanceFromRoundEnd);
 
   useEffect(() => {
-    if (!isHost) return;
+    // Every client schedules an advance; the server guards on phase=round_end
+    // so only the first call does work. Host fires first; others are a fallback
+    // if the host is offline / slow.
+    const delay = isHost ? 4000 : 7000;
     const id = setTimeout(() => {
       advance({ data: { code: room.code, playerId } }).catch(() => {});
-    }, 4000);
+    }, delay);
     return () => clearTimeout(id);
   }, [isHost, room.code, playerId, advance]);
 
