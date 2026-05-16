@@ -483,7 +483,6 @@ export const advanceFromRoundEnd = createServerFn({ method: "POST" })
     if (!players.some((p) => p.id === data.playerId)) throw new Error("Not in room");
     if (room.phase !== "round_end") return { ok: true };
 
-    const players = await loadPlayers(code);
     if (room.drawer_queue.length === 0) {
       // End of round cycle — advance round counter or end game
       if (room.current_round >= room.total_rounds) {
