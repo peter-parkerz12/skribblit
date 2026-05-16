@@ -16,6 +16,7 @@ export interface Room {
   current_drawer_id: string | null;
   secret_word: string | null;
   word_choices: string[];
+  word_mask: string;
   round_ends_at: string | null;
   used_words: string[];
   drawer_queue: string[];
