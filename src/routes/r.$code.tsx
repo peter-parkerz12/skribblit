@@ -92,6 +92,27 @@ function RoomPage() {
     return () => clearTimeout(id);
   }, [room, tick, code]);
 
+  // Drawer-only: fetch the actual secret word + choices via server fn.
+  // (Column-level revoked from anon so the public room row never carries them.)
+  const isDrawerHere = room?.current_drawer_id === playerId;
+  const phase = room?.phase;
+  useEffect(() => {
+    if (!playerId || !room) return;
+    if (!isDrawerHere || (phase !== "choosing" && phase !== "drawing")) {
+      setDrawerSecret({ secret_word: null, word_choices: [] });
+      return;
+    }
+    let cancelled = false;
+    fetchSecret({ data: { code, playerId } })
+      .then((res) => {
+        if (!cancelled) setDrawerSecret(res);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [code, playerId, isDrawerHere, phase, room?.current_drawer_id, fetchSecret, room]);
+
   // Leave on unload
   const playerIdRef = useRef(playerId);
   playerIdRef.current = playerId;
