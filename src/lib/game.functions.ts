@@ -82,19 +82,25 @@ export const createRoom = createServerFn({ method: "POST" })
     });
     if (roomErr) throw new Error(roomErr.message);
 
+    // Purge any stale row for this player from a previous room.
+    await supabaseAdmin.from("players").delete().eq("id", data.playerId);
+
     const color = pickPlayerColor([]);
-    const { error: pErr } = await supabaseAdmin.from("players").upsert({
-      id: data.playerId,
-      room_code: code,
-      name,
-      color,
-      is_host: true,
-      score: 0,
-      round_score: 0,
-      guessed_correctly: false,
-      guess_order: null,
-      last_seen: new Date().toISOString(),
-    });
+    const { error: pErr } = await supabaseAdmin.from("players").upsert(
+      {
+        id: data.playerId,
+        room_code: code,
+        name,
+        color,
+        is_host: true,
+        score: 0,
+        round_score: 0,
+        guessed_correctly: false,
+        guess_order: null,
+        last_seen: new Date().toISOString(),
+      },
+      { onConflict: "id" },
+    );
     if (pErr) throw new Error(pErr.message);
 
     return { code };
@@ -138,15 +144,30 @@ export const joinRoom = createServerFn({ method: "POST" })
       throw new Error("That name is already taken in this room");
     }
 
+    // Player IDs are primary keys — purge any stale row in another room
+    // (e.g. the user previously played in a different room and never cleaned up).
+    await supabaseAdmin
+      .from("players")
+      .delete()
+      .eq("id", data.playerId)
+      .neq("room_code", code);
+
     const color = pickPlayerColor(players.map((p) => p.color));
-    const { error } = await supabaseAdmin.from("players").insert({
-      id: data.playerId,
-      room_code: code,
-      name,
-      color,
-      is_host: false,
-      last_seen: new Date().toISOString(),
-    });
+    const { error } = await supabaseAdmin.from("players").upsert(
+      {
+        id: data.playerId,
+        room_code: code,
+        name,
+        color,
+        is_host: false,
+        score: 0,
+        round_score: 0,
+        guessed_correctly: false,
+        guess_order: null,
+        last_seen: new Date().toISOString(),
+      },
+      { onConflict: "id" },
+    );
     if (error) throw new Error(error.message);
 
     await postSystemMessage(code, `${name} joined`);
@@ -457,10 +478,11 @@ export const advanceFromRoundEnd = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const code = data.code.toUpperCase();
     const room = await loadRoom(code);
-    if (room.host_id !== data.playerId) throw new Error("Not host");
+    // Any player in the room can drive advancement — phase guard makes it idempotent.
+    const players = await loadPlayers(code);
+    if (!players.some((p) => p.id === data.playerId)) throw new Error("Not in room");
     if (room.phase !== "round_end") return { ok: true };
 
-    const players = await loadPlayers(code);
     if (room.drawer_queue.length === 0) {
       // End of round cycle — advance round counter or end game
       if (room.current_round >= room.total_rounds) {
