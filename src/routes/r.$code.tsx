@@ -56,7 +56,7 @@ function RoomPage() {
   const { room, players, messages, loading, notFound } = useRoom(
     playerId ? code : undefined,
   );
-  const me = players.find((p) => p.id === playerId);
+  
 
   // Bootstrap player + try to join
   useEffect(() => {
