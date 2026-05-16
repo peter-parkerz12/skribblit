@@ -478,7 +478,9 @@ export const advanceFromRoundEnd = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const code = data.code.toUpperCase();
     const room = await loadRoom(code);
-    if (room.host_id !== data.playerId) throw new Error("Not host");
+    // Any player in the room can drive advancement — phase guard makes it idempotent.
+    const players = await loadPlayers(code);
+    if (!players.some((p) => p.id === data.playerId)) throw new Error("Not in room");
     if (room.phase !== "round_end") return { ok: true };
 
     const players = await loadPlayers(code);
